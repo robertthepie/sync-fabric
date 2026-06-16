@@ -117,7 +117,6 @@ dependencies {
     modCompileOnly "dev.emi:trinkets:${project.trinkets_version}"
     modCompileOnly("io.github.ladysnake:requiem-api:${project.requiem_version}", { transitive false })
     modCompileOnly "maven.modrinth:origins:${project.origins_version}"
-    modCompileOnly "com.github.apace100:apoli:${project.apoli_version}"
     modCompileOnly "maven.modrinth:haema:${project.haema_version}"
 }
 
