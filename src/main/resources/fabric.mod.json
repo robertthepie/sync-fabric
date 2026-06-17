@@ -24,6 +24,7 @@
       "dev.kir.sync.Sync"
     ],
     "modmenu": [
+      "dev.kir.sync.compat.modmenu.ModMenuCompat"
     ],
     "cardinal-components-entity": [
       "dev.kir.sync.compat.haema.HaemaCompat",
