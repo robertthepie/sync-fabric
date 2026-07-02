@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import dev.kir.sync.Sync;
 import dev.kir.sync.api.shell.Shell;
 import dev.kir.sync.api.shell.ShellState;
 import dev.kir.sync.api.shell.ShellStateContainer;
@@ -37,6 +38,9 @@ public class GhostShellsCommand implements Command {
     @Override
     public boolean hasPermissions(ServerCommandSource commandSource) {
         final int OP_LEVEL = 2;
+        Sync.LOGGER.info(
+                "syncshell perm levels:" + commandSource.getServer().isSingleplayer() + " server: " + commandSource.hasPermissionLevel(OP_LEVEL)
+        );
         return commandSource.hasPermissionLevel(OP_LEVEL) || commandSource.getServer().isSingleplayer();
     }
 

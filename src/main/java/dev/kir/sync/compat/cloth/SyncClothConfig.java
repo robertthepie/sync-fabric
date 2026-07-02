@@ -28,6 +28,23 @@ public class SyncClothConfig implements SyncConfig, ConfigData {
         return INSTANCE;
     }
 
+
+    @ConfigEntry.Category(value = "neep")
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Gui.RequiresRestart
+    public int storageEJNeeds = SyncConfig.super.storageEJNeeds();
+
+    @ConfigEntry.Category(value = "neep")
+    @ConfigEntry.Gui.Tooltip(count = 3)
+    @ConfigEntry.Gui.RequiresRestart
+    public int constructorLiquidNeeds = SyncConfig.super.constructorLiquidNeeds();
+
+    @ConfigEntry.Category(value = "neep")
+    @ConfigEntry.Gui.Tooltip(count = 2)
+    @ConfigEntry.Gui.RequiresRestart
+    public float constructorProgressPer1000 = SyncConfig.super.constructorProgressPer1000();
+
+
     @ConfigEntry.Category(value = "shell_construction")
     @ConfigEntry.Gui.Tooltip(count = 2)
     public boolean enableInstantShellConstruction = SyncConfig.super.enableInstantShellConstruction();

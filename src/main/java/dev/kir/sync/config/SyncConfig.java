@@ -157,4 +157,9 @@ public interface SyncConfig {
             return ShellPriority.NATURAL;
         }
     }
+
+    // neep specifics
+    default int storageEJNeeds() { return 200; }
+    default int constructorLiquidNeeds() { return 540; }
+    default float constructorProgressPer1000() { return 0.000834f;}
 }

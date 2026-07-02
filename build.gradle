@@ -39,6 +39,7 @@ loom {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
@@ -97,6 +98,25 @@ repositories {
         name = 'Quilt'
         url = "https://maven.quiltmc.org/repository/release"
     }
+
+    maven { url "https://mvn.devos.one/snapshots/" } // Milk lib
+    maven { url "https://api.modrinth.com/maven" } // Milk lib's internal dependencies
+
+    maven { url 'https://repo.sleeping.town/' }
+    maven { url 'https://maven.valkyrienskies.org' }
+    maven { url "https://maven.createmod.net/" }
+    maven { url 'https://maven.ladysnake.org/releases' }
+    maven { url "https://maven.architectury.dev/" }
+
+    // GeckoLib
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+            includeGroup("com.eliotlash.mclib")
+        }
+    }
 }
 
 // To change the versions see the gradle.properties file
@@ -118,6 +138,26 @@ dependencies {
     modCompileOnly("io.github.ladysnake:requiem-api:${project.requiem_version}", { transitive false })
     modCompileOnly "maven.modrinth:origins:${project.origins_version}"
     modCompileOnly "maven.modrinth:haema:${project.haema_version}"
+
+
+    // maybe neepmeat? anything beyond this point is held together with delusions of grandeur
+    modImplementation "maven.modrinth:neepmeat:${neepmeat_version}"
+
+    // Milk lib
+    modImplementation include("io.github.tropheusj:milk-lib:${project.milk_version}")
+
+    modImplementation("software.bernie.geckolib:geckolib-fabric-${minecraft_version}:${geckolib_version}")
+
+    modImplementation 'com.neep:meatlib:0.1.0'
+    modImplementation 'com.neep:neepspeak:1.16-SNAPSHOT'
+
+    implementation include("org.apache.commons:commons-collections4:${project.commons_collections4_version}")
+    // Myron
+    modApi 'dev.monarkhes:myron_neepmeat:1.6.5+1.20.1'
+    modImplementation 'dev.monarkhes:myron_neepmeat:1.6.5+1.20.1'
+
+    modRuntimeOnly "maven.modrinth:9s6osm5g:11.1.136+fabric"
+    modRuntimeOnly "maven.modrinth:mOgUt4GM:7.2.2"
 }
 
 processResources {

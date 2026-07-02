@@ -83,6 +83,11 @@ public abstract class AbstractShellContainerBlock extends BlockWithEntity {
         return half == DoubleBlockHalf.LOWER;
     }
 
+    public static boolean isTop(BlockState state) {
+        DoubleBlockHalf half = state.get(HALF);
+        return half == DoubleBlockHalf.UPPER;
+    }
+
     public static DoubleBlockProperties.Type getShellContainerHalf(BlockState state) {
         DoubleBlockHalf part = state.get(HALF);
         return part == DoubleBlockHalf.LOWER ? DoubleBlockProperties.Type.FIRST : DoubleBlockProperties.Type.SECOND;

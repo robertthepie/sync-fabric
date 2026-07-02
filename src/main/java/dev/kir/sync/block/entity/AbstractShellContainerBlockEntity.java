@@ -44,6 +44,7 @@ public abstract class AbstractShellContainerBlockEntity extends BlockEntity impl
     protected int progressComparatorOutput;
     protected int inventoryComparatorOutput;
     private AbstractShellContainerBlockEntity bottomPart;
+    private AbstractShellContainerBlockEntity topPart;
 
     private ShellState syncedShell;
     private BlockPos syncedShellPos;
@@ -96,6 +97,13 @@ public abstract class AbstractShellContainerBlockEntity extends BlockEntity impl
             this.bottomPart = AbstractShellContainerBlock.isBottom(this.getCachedState()) ? this : (this.world.getBlockEntity(this.pos.offset(Direction.DOWN)) instanceof AbstractShellContainerBlockEntity x ? x : null);
         }
         return Optional.ofNullable(this.bottomPart);
+    }
+
+    protected Optional<AbstractShellContainerBlockEntity> getTopPart() {
+        if (this.topPart == null && this.world != null) {
+            this.topPart = AbstractShellContainerBlock.isTop(this.getCachedState()) ? this : (this.world.getBlockEntity(this.pos.offset(Direction.UP)) instanceof AbstractShellContainerBlockEntity x ? x : null);
+        }
+        return Optional.ofNullable(this.topPart);
     }
 
     @Override
