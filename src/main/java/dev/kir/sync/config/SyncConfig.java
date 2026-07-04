@@ -160,6 +160,6 @@ public interface SyncConfig {
 
     // neep specifics
     default int storageEJNeeds() { return 200; }
-    default int constructorLiquidNeeds() { return 540; }
-    default float constructorProgressPer1000() { return 0.000834f;}
+    default int constructorLiquidNeeds() { return 648000; }
+    default float constructorProgressPer1000() { return 300f;}
 }

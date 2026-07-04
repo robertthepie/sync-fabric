@@ -5,6 +5,7 @@ import dev.kir.sync.block.entity.SyncBlockEntities;
 import dev.kir.sync.client.render.CustomGameRenderer;
 import dev.kir.sync.client.render.SyncRenderers;
 import dev.kir.sync.command.SyncCommands;
+import dev.kir.sync.compat.NeepArticles;
 import dev.kir.sync.config.SyncConfig;
 import dev.kir.sync.item.SyncItemGroups;
 import dev.kir.sync.item.SyncItems;
@@ -42,6 +43,7 @@ public class Sync implements ModInitializer, ClientModInitializer {
         SyncPackets.init();
         SyncCommands.init();
         Registry.register(Registries.ITEM_GROUP, new Identifier("sync", "sync"), SyncItemGroups.MAIN);
+        NeepArticles.init();
     }
 
     @Override

@@ -40,9 +40,13 @@ public class SyncClothConfig implements SyncConfig, ConfigData {
     public int constructorLiquidNeeds = SyncConfig.super.constructorLiquidNeeds();
 
     @ConfigEntry.Category(value = "neep")
-    @ConfigEntry.Gui.Tooltip(count = 2)
+    @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Gui.RequiresRestart
     public float constructorProgressPer1000 = SyncConfig.super.constructorProgressPer1000();
+
+    public int storageEJNeeds() { return storageEJNeeds; }
+    public int constructorLiquidNeeds() { return constructorLiquidNeeds; }
+    public float constructorProgressPer1000() { return constructorProgressPer1000;}
 
 
     @ConfigEntry.Category(value = "shell_construction")

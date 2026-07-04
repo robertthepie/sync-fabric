@@ -28,6 +28,7 @@ import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -46,10 +47,10 @@ import static dev.kir.sync.block.AbstractShellContainerBlock.HALF;
 @SuppressWarnings({"UnstableApiUsage"})
 public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEntity {
 
-    private static int constructorLiquidNeeds = Sync.getConfig().constructorLiquidNeeds();
-    private static float constructorProgressPer1000 = Sync.getConfig().constructorProgressPer1000();
+    private static int constructorLiquidGoal = Sync.getConfig().constructorLiquidNeeds();
+    private static int constructorLiquidNeeds = Math.round(Sync.getConfig().constructorLiquidNeeds() / (Sync.getConfig().constructorProgressPer1000() * 20));
 
-    protected float leftoverProgress = 0;
+    private int progress = 0;
 
     public ShellConstructorBlockEntity(BlockPos pos, BlockState state) {
         super(SyncBlockEntities.SHELL_CONSTRUCTOR, pos, state);
@@ -109,6 +110,7 @@ public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEnti
 
     private long tryDrain() {
         long work_fluid_amount_extracted = 0;
+        long ammountToExtract = Math.min(constructorLiquidNeeds, constructorLiquidGoal - progress);
         try (Transaction transaction = Transaction.openOuter()) {
             List<Storage<FluidVariant>> inputList = getAdjacentStorages();
             if (inputList.isEmpty()) {
@@ -119,7 +121,7 @@ public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEnti
             Storage<FluidVariant> combinedStorage = new CombinedStorage<>(inputList);
 
             try (Transaction inner = ((TransactionContext) transaction).openNested()) {
-                work_fluid_amount_extracted = combinedStorage.extract(NMFluids.WORK_FLUID.variant(), constructorLiquidNeeds, inner);
+                work_fluid_amount_extracted = combinedStorage.extract(NMFluids.WORK_FLUID.variant(), ammountToExtract, inner);
                 long slurry_amount_extracted = combinedStorage.extract(NMFluids.TISSUE_SLURRY.variant(), work_fluid_amount_extracted, transaction);
                 if (slurry_amount_extracted < work_fluid_amount_extracted) {
                     inner.abort();
@@ -136,6 +138,8 @@ public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEnti
 
     @Override
     public void onServerTick(World world, BlockPos pos, BlockState state) {
+
+
         super.onServerTick(world, pos, state);
         if (ShellConstructorBlock.isOpen(state)) {
             ShellConstructorBlock.setOpen(state, world, pos, BlockPosUtil.hasPlayerInside(pos, world));
@@ -143,19 +147,16 @@ public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEnti
         DoubleBlockHalf half = getCachedState().get(HALF);
         if (half == DoubleBlockHalf.UPPER) return;
 
+
         if (shell == null) return;
+        if (progress >= constructorLiquidGoal) return;
 
-        float progress = shell.getProgress();
-        if (progress >= 1.0f) return;
-
-        leftoverProgress = tryDrain();
+        long leftoverProgress = tryDrain();
         if (leftoverProgress > 0) {
-            float frac = constructorLiquidNeeds / leftoverProgress * constructorProgressPer1000;
-            shell.setProgress(shell.getProgress() + frac);
-            }
-        else
-            adjacentStorageCache = null;
-        leftoverProgress = 0;
+            progress += (int) leftoverProgress;
+            shell.setProgress((float) progress / constructorLiquidGoal);
+        }
+        adjacentStorageCache = null;
 
 
     }
@@ -199,12 +200,24 @@ public class ShellConstructorBlockEntity extends AbstractShellContainerBlockEnti
             player.damage(world.getDamageSources().sweetBerryBush(), damage);
             this.shell = ShellState.empty(serverPlayer, pos);
             if (isCreative && config.enableInstantShellConstruction()) {
+                progress = constructorLiquidGoal;
                 this.shell.setProgress(ShellState.PROGRESS_DONE);
-            }
+            } else progress = 0;
         }
         return null;
     }
 
+    @Override
+    protected void writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        nbt.putInt("fluidProgress", progress);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        progress = nbt.contains("fluidProgress") ? nbt.getInt("fluidProgress") : 0;
+    }
 
 
     static {
